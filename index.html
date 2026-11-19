@@ -602,7 +602,7 @@ const CREW = [
     look: { skin: "#c68e5e", hair: "#1f130c", hs: "long", shirt: "#f2e8da", jacket: "#4f7cc0", sleeve: "#4f7cc0", pants: "#1e1e22", baggy: true, shoes: "#f2f2f2", hoops: "#ffcf4a" } },
   { id: "alyssa", name: "Alyssa", role: "Lead singer", perk: "Starts every run on balloons. Balloons last twice as long. Sings music notes at monsters.", cost: 250, shot: "note", rate: .22, balloons: true, item: "mic",
     look: { skin: "#f3cfb3", hair: "#4a2c18", hs: "long", shirt: "#151515", tee: "BRUNO", pants: "#55613b", cargo: true, belt: "#1b1b1b", hightops: true } },
-  { id: "joel", name: "Joel", role: "Big stomper", perk: "Stomps cause a quake that takes out every monster nearby.", cost: 300, shot: "soccer", rate: .3, quake: true, item: "soccer",
+  { id: "joel", name: "Joel", role: "Star striker", perk: "Kicks soccer balls that bank off the walls to find more monsters.", cost: 300, shot: "soccer", rate: .26, item: "soccer",
     look: { skin: "#6b4129", hair: "#151515", hs: "buzz", shirt: "#fed100", jersey: { trim: "#009b3a", side: "#151515", num: "10", numCol: "#151515" }, pants: "#151515", baggy: true, shoes: "#f2f2f2" } },
 ];
 const SAFETY = [
@@ -769,7 +769,7 @@ function shoot(tx, ty) {
     if (dy > -.42) { dy = -.42; dx = Math.sign(dx || 1) * Math.sqrt(1 - dy * dy); }
   }
   const sp = ch.shot === "food" ? 640 : (ch.shot === "star" || ch.shot === "book") ? 620 : 860;
-  G.shots.push({ x: sx, y: sy, vx: dx * sp, vy: dy * sp, k: ch.shot, food: ch.id === "destiny" ? "bun" : pick(FOODS), rot: 0, life: 1.3, bounced: 0, hit: new Set() });
+  G.shots.push({ x: sx, y: sy, vx: dx * sp, vy: dy * sp, k: ch.shot, food: ch.id === "destiny" ? "bun" : pick(FOODS), rot: 0, life: ch.shot === "soccer" ? 1.8 : 1.3, bounced: 0, hit: new Set() });
   P.cd = ch.rate; P.shootT = .18;
   if (dx) P.face = Math.sign(dx);
   sfx("shoot");
@@ -920,6 +920,7 @@ function update(dt) {
       if (best) { const sp = Math.hypot(s.vx, s.vy), dx = best.x - s.x, dy = (best.y - best.off) - s.y, l = Math.hypot(dx, dy) || 1, k = Math.min(1, dt * 7); s.vx = lerp(s.vx, dx / l * sp, k); s.vy = lerp(s.vy, dy / l * sp, k); }
     }
     s.x += s.vx * dt; s.y += s.vy * dt; s.rot += dt * 14; s.life -= dt;
+    if (s.k === "soccer" && (s.x < 8 || s.x > W - 8)) { s.vx = -s.vx; s.x = clamp(s.x, 8, W - 8); burst(s.x, s.y, SOFT, 5, 120); }
     for (const e of G.ens) {
       if (e.dead || s.hit.has(e) || s.life <= 0) continue;
       if (Math.hypot(s.x - e.x, s.y - (e.y - e.off)) < e.r + (s.k === "wrench" ? 14 : 8)) {
