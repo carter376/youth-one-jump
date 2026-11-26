@@ -1283,8 +1283,8 @@ function drawPlayer(P) {
     if (ch.kid) person(ctx, -P.face * 16, 0, Object.assign({}, ch.kid, { s: s * .62, flip: P.face < 0, legs: up ? [-2, 1.8] : [1.4, -1.2], aF: up ? -2.6 : -1.4, aB: up ? 2.2 : 1 }));
     person(ctx, 0, 0, Object.assign({}, ch.look, {
       s, flip: P.face < 0,
-      legs: up ? [-2.6, 2.2] : [1.8, -1.6],
-      aF: P.shootT > 0 ? -3 : P.fly > 0 ? -3 : up ? -2.5 : -1.1,
+      legs: ch.id === "joel" && P.shootT > 0 ? [-1.2, 6.5] : up ? [-2.6, 2.2] : [1.8, -1.6],
+      aF: ch.id === "joel" ? (up ? -.35 : -.15) : P.shootT > 0 ? -3 : P.fly > 0 ? -3 : up ? -2.5 : -1.1,
       aB: up ? 2.4 : 1.2,
       itemF: ch.item ? ITEMS[ch.item] : undefined,
     }));
